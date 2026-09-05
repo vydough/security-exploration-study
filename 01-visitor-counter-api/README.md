@@ -17,25 +17,25 @@ Website visitor counter before investigation:
 The endpoint was identified via the DevTools Network Tab, which showed the exact request the page makes upon Ctrl + R (Refresh).
 
 ### Fig 1 - The counter's request in DevTools. The function URL is visible and exposed in the page source. 
-![Lambda Function URL in DevTools](./01-visitor-counter-api/images/02-finding-lambda-function-url)
+![Lambda Function URL in DevTools](./01-visitor-counter-api/images/02-finding-lambda-function-url.png)
 
 
-![Calling the function sequentially](./01-visitor-counter-api/images/04-successful-unauthenticated-request-to-lambda-endpoint)
-![Calling the function sequentially](./01-visitor-counter-api/images/04-successful-unauthenticated-request-to-lambda-endpoint-2)
+![Calling the function sequentially](./01-visitor-counter-api/images/04-successful-unauthenticated-request-to-lambda-endpoint.png)
+![Calling the function sequentially](./01-visitor-counter-api/images/04-successful-unauthenticated-request-to-lambda-endpoint-2.png)
 
 ### Fig 2 - Calling the function sequentially (50 requests, one after another
-![Calling the function concurrently](./01-visitor-counter-api/images/05-loop-for-sequential-requests)
+![Calling the function concurrently](./01-visitor-counter-api/images/05-loop-for-sequential-requests.png)
 
 ### Fig 3 - Calling the function  (30 requests at once) 
-![Calling the function concurrently](./01-visitor-counter-api/images/08-concurrent-requests)
-![Calling the function concurrently](./01-visitor-counter-api/images/09-concurrent-request-throttling-output)
+![Calling the function concurrently](./01-visitor-counter-api/images/08-concurrent-requests.png)
+![Calling the function concurrently](./01-visitor-counter-api/images/09-concurrent-request-throttling-output.png)
 
 ### Fig 4 - Updated Visitor counter after function was tested
-![Updated Visitor counter](./01-visitor-counter-api/images/06-visitor-counter-inflation-to-249)
+![Updated Visitor counter](./01-visitor-counter-api/images/06-visitor-counter-inflation-to-249.png)
 
 ## MY FINDINGS
 ### Fig 5 - Invocations spike shown on CloudWatch after calling function called concurrently (30 requests at once) 
-![CloudWatch Invocations Spike](./01-visitor-counter-api/images/07-cloudwatch-lambda-invocation-spike)
+![CloudWatch Invocations Spike](./01-visitor-counter-api/images/07-cloudwatch-lambda-invocation-spike.png)
 
 ### 1) The endpoint has no authentication and no rate limiting implemented
    - The single request returned 'HTTP 200" with the counter value in the body and can answer any client
@@ -58,7 +58,7 @@ This means that 10 requests fill the available execution slots and returned 200 
 Concurrency restrictions limit how many executions can run at the same instant (capping at simultaneous flood). But, Sequential attacks don't use more than 1 concurrent execution as each curl is finished before the next begins. 
 
 ### Fig 6 - Account restrictions on concurrent executions 
-![CloudWatch Invocations Spike](./01-visitor-counter-api/images/10-lambda-concurrent-execution-protection)
+![CloudWatch Invocations Spike](./01-visitor-counter-api/images/10-lambda-concurrent-execution-protection.png)
 
 So the concurrency limits does nothing against this cap. 
 
