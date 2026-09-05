@@ -1,4 +1,4 @@
-<img width="1474" height="1067" alt="06-visitor-counter-inflation-to-249" src="https://github.com/user-attachments/assets/3751cff5-0980-4923-8a6a-0a3c0131411d" /># Visitor-counter API: Abusing the counter outside the browser
+# Visitor-counter API: Abusing the counter outside the browser
 
 A self-directed security exploration of the visitor-counter on my personal site previously completed from the Cloud Resume Challenge.
 [vydosite.website] (https://www.vydosite.website/)
@@ -12,30 +12,30 @@ My question: If CORS is not authentication and not access control, can anything 
 
 ## MY METHOD
 Website visitor counter before investigation: 
-![Initial Live Visitor Counter](./01-visitor-counter-api/images/01-initial-live-visitor-counter.png)
+![Initial Live Visitor Counter](./images/01-initial-live-visitor-counter.png)
 
 The endpoint was identified via the DevTools Network Tab, which showed the exact request the page makes upon Ctrl + R (Refresh).
 
 ### Fig 1 - The counter's request in DevTools. The function URL is visible and exposed in the page source. 
-![Lambda Function URL in DevTools](./01-visitor-counter-api/images/02-finding-lambda-function-url.png)
+![Lambda Function URL in DevTools](./images/02-finding-lambda-function-url.png)
 
 
-![Calling the function sequentially](./01-visitor-counter-api/images/04-successful-unauthenticated-request-to-lambda-endpoint.png)
-![Calling the function sequentially](./01-visitor-counter-api/images/04-successful-unauthenticated-request-to-lambda-endpoint-2.png)
+![Calling the function sequentially](./images/04-successful-unauthenticated-request-to-lambda-endpoint.png)
+![Calling the function sequentially](./images/04-successful-unauthenticated-request-to-lambda-endpoint-2.png)
 
 ### Fig 2 - Calling the function sequentially (50 requests, one after another
-![Calling the function concurrently](./01-visitor-counter-api/images/05-loop-for-sequential-requests.png)
+![Calling the function concurrently](./images/05-loop-for-sequential-requests.png)
 
 ### Fig 3 - Calling the function  (30 requests at once) 
-![Calling the function concurrently](./01-visitor-counter-api/images/08-concurrent-requests.png)
-![Calling the function concurrently](./01-visitor-counter-api/images/09-concurrent-request-throttling-output.png)
+![Calling the function concurrently](./images/08-concurrent-requests.png)
+![Calling the function concurrently](./images/09-concurrent-request-throttling-output.png)
 
 ### Fig 4 - Updated Visitor counter after function was tested
-![Updated Visitor counter](./01-visitor-counter-api/images/06-visitor-counter-inflation-to-249.png)
+![Updated Visitor counter](./images/06-visitor-counter-inflation-to-249.png)
 
 ## MY FINDINGS
 ### Fig 5 - Invocations spike shown on CloudWatch after calling function called concurrently (30 requests at once) 
-![CloudWatch Invocations Spike](./01-visitor-counter-api/images/07-cloudwatch-lambda-invocation-spike.png)
+![CloudWatch Invocations Spike](./images/07-cloudwatch-lambda-invocation-spike.png)
 
 ### 1) The endpoint has no authentication and no rate limiting implemented
    - The single request returned 'HTTP 200" with the counter value in the body and can answer any client
@@ -58,7 +58,7 @@ This means that 10 requests fill the available execution slots and returned 200 
 Concurrency restrictions limit how many executions can run at the same instant (capping at simultaneous flood). But, Sequential attacks don't use more than 1 concurrent execution as each curl is finished before the next begins. 
 
 ### Fig 6 - Account restrictions on concurrent executions 
-![CloudWatch Invocations Spike](./01-visitor-counter-api/images/10-lambda-concurrent-execution-protection.png)
+![CloudWatch Invocations Spike](./images/10-lambda-concurrent-execution-protection.png)
 
 So the concurrency limits does nothing against this cap. 
 
