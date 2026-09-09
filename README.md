@@ -1,1 +1,1 @@
-# vydosite-security-assessments
+# Studying Security Explorations 
