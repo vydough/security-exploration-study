@@ -71,8 +71,10 @@ I wanted to implement a change upon this finding but it was not applicable for s
 
 2. It is the wrong tool regardless as increasing the quota means it caps simultaneous executions - not sequential ones which is the real weakness.
 
-If I were to implement a control, it would be:
-1. Request throttling per IP/request - helps to stopping bursts and reducing abuse by limiting how fast requests arrive.
-2. Count each as a unique active session, not requests - using session IDs and TTL/expiry
+### What security concept I had learned from this 
+   - CORS is s browser policy and not access control
+   - I learned that concurrency limits simultaneity, not volume
+   - I learned the difference between rate and concurrency
+   - The. security impact of this potentially experiencing a surge in the Lambda innovations and which can increase costs.
 
 
